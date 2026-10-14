@@ -6,8 +6,8 @@ import json
 import tensorflow as tf
 from tensorflow import keras
 
-from dataset import load_dataset
-from model import create_custom_cnn
+from src.dataset import load_dataset
+from src.model import create_custom_cnn
 
 
 # Reproductibilité
@@ -21,7 +21,7 @@ MODEL_PATH = os.path.join(MODEL_DIR, "custom_cnn.keras")
 CLASSES_PATH = os.path.join(MODEL_DIR, "class_names.json")
 
 
-def train_model(model):
+def train_model(model, train_ds, val_ds, class_names,):
     os.makedirs(MODEL_DIR, exist_ok=True)
 
     # Chargement des données

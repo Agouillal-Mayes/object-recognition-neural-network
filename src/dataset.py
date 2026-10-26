@@ -65,24 +65,9 @@ def load_dataset():
 def get_data_augmentation():
     """Définit la pipeline d'augmentation pour le dataset d'entraînement."""
     return keras.Sequential([
-    # 1. Flip horizontal uniquement (conserve le sens naturel des objets)
-    tf.keras.layers.RandomFlip("horizontal"),
-
-    # 2. Rotation légère (-20% à +20%)
-    tf.keras.layers.RandomRotation(factor=0.2, fill_mode="reflect"),
-
-    # 3. Zoom (-20% à +20%)
-    tf.keras.layers.RandomZoom(height_factor=0.2, width_factor=0.2, fill_mode="reflect"),
-
-    # 4. Translation (-20% à +20%)
-    tf.keras.layers.RandomTranslation(height_factor=0.2, width_factor=0.2, fill_mode="reflect"),
-
-    # 5. Variations de contraste et de luminosité (adaptées à la plage 0-255)
-    tf.keras.layers.RandomContrast(factor=0.2),
-    tf.keras.layers.RandomBrightness(factor=0.2, value_range=(0, 255)),
-
-    # 6. Ajout de bruit gaussien léger
-    tf.keras.layers.GaussianNoise(0.05)
+    keras.layers.RandomRotation(0.08),
+    keras.layers.RandomZoom(0.1),
+    keras.layers.RandomTranslation(0.1, 0.1),
     ], name="data_augmentation")
 
 

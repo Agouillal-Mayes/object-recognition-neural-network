@@ -21,7 +21,7 @@ MODEL_PATH = os.path.join(MODEL_DIR, "custom_cnn.keras")
 CLASSES_PATH = os.path.join(MODEL_DIR, "class_names.json")
 
 
-def train_model(model, train_ds, val_ds, class_names,):
+def train_model(model,EPOCHS=EPOCHS):
     os.makedirs(MODEL_DIR, exist_ok=True)
 
     # Chargement des données
@@ -58,12 +58,5 @@ def train_model(model, train_ds, val_ds, class_names,):
         epochs=EPOCHS,
         callbacks=callbacks
     )
-
-    # Sauvegarde des noms de classes
-    with open(CLASSES_PATH, "w", encoding="utf-8") as f:
-        json.dump(class_names, f, ensure_ascii=False, indent=2)
-
-    print(f"Meilleur modèle sauvegardé dans : {MODEL_PATH}")
-    print(f"Noms des classes sauvegardés dans : {CLASSES_PATH}")
 
     return history

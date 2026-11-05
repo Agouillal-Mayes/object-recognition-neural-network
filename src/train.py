@@ -60,3 +60,38 @@ def train_model(model,EPOCHS=EPOCHS):
     )
 
     return history
+
+def train_resnet50_model(model,EPOCHS=EPOCHS):
+   
+
+    callbacks = [
+    keras.callbacks.ModelCheckpoint(
+        "/content/object-recognition-neural-network/models/resnet50_best.keras",
+        monitor="val_loss",
+        save_best_only=True,
+        verbose=1
+    ),
+
+    keras.callbacks.EarlyStopping(
+        monitor="val_loss",
+        patience=5,
+        restore_best_weights=True,
+        verbose=1
+    ),
+
+    keras.callbacks.ReduceLROnPlateau(
+        monitor="val_loss",
+        factor=0.5,
+        patience=2,
+        min_lr=1e-7,
+        verbose=1
+    )
+]
+
+    history = model.fit(
+        train_ds,
+        validation_data=val_ds,
+        epochs=20,
+        callbacks=callbacks
+    )
+    return history

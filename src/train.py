@@ -62,7 +62,9 @@ def train_model(model,EPOCHS=EPOCHS):
     return history
 
 def train_resnet50_model(model,EPOCHS=EPOCHS):
-   
+
+    from src.dataset import load_dataset
+    train_ds, val_ds, class_names = load_dataset()
 
     callbacks = [
     keras.callbacks.ModelCheckpoint(

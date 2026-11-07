@@ -69,6 +69,8 @@ def create_resnet50(num_classes, pretrained=False):
     base_model.trainable = not pretrained"""
 
     inputs = keras.Input(shape=(224, 224, 3))
+    from src.dataset import get_data_augmentation
+    data__augmentation = get_data_augmentation()
     x = data__augmentation(inputs)
 
     # Prétraitement spécifique à ResNet50

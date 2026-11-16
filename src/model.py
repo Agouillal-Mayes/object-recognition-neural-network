@@ -54,13 +54,11 @@ def create_custom_cnn(num_classes):
 
 
 def create_resnet50(num_classes, pretrained=False):
-    """# Charger l'architecture ResNet50
-    # weights=None : poids initialisés aléatoirement
-    # weights="imagenet" : poids préentraînés sur ImageNet
-    weights = "imagenet" if pretrained else None"""
+    # Charger l'architecture ResNet50
+    weights = "imagenet" if pretrained else None
 
     base_model = keras.applications.ResNet50(
-        #weights=weights,
+        weights=weights,
         include_top=False,
         input_shape=(224, 224, 3)
     )

@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#f6f7f2">
   <meta name="description" content="Vision, une interface simple pour reconnaître les objets présents dans vos images.">
   <title>Vision — Un objet. Une réponse.</title>
-  <link rel="stylesheet" href="../statics/css/style.css">
-  <script src="../statics/js/script.js" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Aller au contenu</a>

@@ -1,4 +1,5 @@
 "use strict";
+console.log("Mon JavaScript est chargé !");
 
 const imageInput = document.getElementById("image-input");
 const dropzone = document.getElementById("dropzone");
@@ -139,6 +140,7 @@ function resetSelection() {
 }
 
 imageInput.addEventListener("change", () => {
+  console.log("Une image a été sélectionnée !");
   if (imageInput.files.length) selectImage(imageInput.files[0]);
 });
 
@@ -190,14 +192,96 @@ document.getElementById("prediction-form").addEventListener("submit", (event) =>
 
   // Prediction will be connected to the Python server in the next step.
   // Keep this state explicit instead of displaying a simulated prediction.
-  updateResult(
-    "Analyse bientôt disponible",
-    "Votre image est bien préparée.",
-    "La reconnaissance n’est pas encore disponible. Vous pouvez déjà essayer d’autres images et vérifier leur aperçu.",
-    true,
-  );
+  sendImage();
 });
 
 window.addEventListener("pagehide", () => {
   if (previewUrl) URL.revokeObjectURL(previewUrl);
 });
+
+
+
+
+async function sendImage() {
+  // Vérifier qu'une image est sélectionnée
+  if (!selectedFile) return;
+
+  // Conserver le fichier envoyé pour cette analyse
+  const fileToSend = selectedFile;
+
+  try {
+    // 1. Désactiver le bouton pendant l'analyse
+    analyzeButton.disabled = true;
+
+    // 2. Afficher un message de chargement
+    updateResult(
+      "Analyse en cours",
+      "Reconnaissance de l'image...",
+      "Veuillez patienter pendant que le modèle analyse votre image.",
+      false
+    );
+
+    // 3. Préparer les données du formulaire
+    const data = new FormData();
+    data.append("image", fileToSend);
+
+    // 4. Envoyer l'image au serveur Flask
+    const response = await fetch("/predict", {
+      method: "POST",
+      body: data
+    });
+
+    // 5. Récupérer la réponse JSON
+    const result = await response.json();
+
+    // Ignorer le résultat si l'utilisateur a changé d'image
+    if (selectedFile !== fileToSend) return;
+
+    // 6. Vérifier la réponse du serveur
+    if (response.ok) {
+      const percentage = result.confidence_score * 100;
+
+      // 7. Afficher la prédiction
+      updateResult(
+        "Prédiction terminée",
+        `L'image est classée comme : ${result.predicted_class}`,
+        `Score de classification : ${percentage.toFixed(2)} %`,
+        true
+      );
+
+      console.log(
+        "Réponse du serveur :",
+        result.predicted_class,
+        result.confidence_score
+      );
+
+    } else {
+      // 8. Gérer les erreurs HTTP
+      console.error("Erreur du serveur :", result);
+
+      updateResult(
+        "Erreur",
+        "L'analyse a échoué",
+        "Le serveur n'a pas pu analyser votre image. Veuillez réessayer.",
+        false
+      );
+    }
+
+  } catch (error) {
+    // 9. Gérer les erreurs réseau ou JavaScript
+    console.error("Une erreur est survenue :", error);
+
+    if (selectedFile === fileToSend) {
+      updateResult(
+        "Erreur",
+        "L'analyse a échoué",
+        "Impossible de communiquer avec le serveur. Veuillez réessayer.",
+        false
+      );
+    }
+
+  } finally {
+    // 10. Réactiver le bouton si une image est sélectionnée
+    analyzeButton.disabled = !selectedFile;
+  }
+}
